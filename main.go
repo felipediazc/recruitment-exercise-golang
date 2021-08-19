@@ -1,7 +1,7 @@
 package main
 
 import (
-	".main.go/factory"
+	"github.com/felipediazc/recluitment-exercise-golang/factory"
 )
 
 const carsAmount = 100
