@@ -8,8 +8,9 @@ import (
 )
 
 const carsAmount = 100
+const carsAssemblyQueue = 5
 
-func printVehicleData(blockNumber int, carNumber int, ch chan *vehicle.Car) {
+func printVehicleData(blockNumber int, carNumber int, ch chan vehicle.Car) {
 	vehicle := <-ch
 	fmt.Println("BLOCK: ", blockNumber, "CAR ", carNumber, "CAR_ID", vehicle.Id)
 	fmt.Println("AssembleLog", vehicle.AssembleLog)
@@ -21,17 +22,14 @@ func main() {
 	//Hint: change appropriately for making factory give each vehicle once assembled, even though the others have not been assembled yet,
 	//each vehicle delivered to main should display testinglogs and assemblelogs with the respective vehicle id
 
-	ch := make(chan *vehicle.Car, 5)
+	ch := make(chan vehicle.Car, carsAssemblyQueue)
+	factory := factory.New()
+	go factory.StartAssemblingProcess(carsAmount, ch)
 
-	for i := 0; i < carsAmount; i++ {
-		factory := factory.New()
-		go factory.StartAssemblingProcess(1, ch)
-		go factory.StartAssemblingProcess(1, ch)
-		go factory.StartAssemblingProcess(1, ch)
-		go factory.StartAssemblingProcess(1, ch)
-		go factory.StartAssemblingProcess(1, ch)
+	for i := 0; i < (carsAmount / carsAssemblyQueue); i++ {
 
 		time.Sleep(7 * time.Second)
+
 		printVehicleData(i, 1, ch)
 		printVehicleData(i, 2, ch)
 		printVehicleData(i, 3, ch)

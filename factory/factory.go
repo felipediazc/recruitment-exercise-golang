@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/felipediazc/recluitment-exercise-golang/assemblyspot"
 	"github.com/felipediazc/recluitment-exercise-golang/vehicle"
+	"time"
 )
 
 const assemblySpots int = 5
@@ -34,10 +35,10 @@ func New() *Factory {
 
 //HINT: this function is currently not returning anything, make it return right away every single vehicle once assembled,
 //(Do not wait for all of them to be assembled to return them all, send each one ready over to main)
-func (f *Factory) StartAssemblingProcess(amountOfVehicles int, ch chan *vehicle.Car) {
+func (f *Factory) StartAssemblingProcess(amountOfVehicles int, ch chan vehicle.Car) {
 	vehicleList := f.generateVehicleLots(amountOfVehicles)
 	for _, vehicle := range vehicleList {
-		fmt.Println("Assembling vehicle...")
+		fmt.Println("Assembling vehicle...", vehicle.Id)
 
 		idleSpot := <-f.AssemblingSpots
 		idleSpot.SetVehicle(&vehicle)
@@ -45,13 +46,16 @@ func (f *Factory) StartAssemblingProcess(amountOfVehicles int, ch chan *vehicle.
 		if err != nil {
 			continue
 		}
-
 		vehicle.TestingLog = f.testCar(vehicle)
 		vehicle.AssembleLog = idleSpot.GetAssembledLogs()
 
 		idleSpot.SetVehicle(nil)
 		f.AssemblingSpots <- idleSpot
-		ch <- vehicle
+
+		ch <- *vehicle
+		for len(ch) == cap(ch) {
+			time.Sleep(1 * time.Second)
+		}
 	}
 }
 

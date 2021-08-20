@@ -22,6 +22,20 @@ func TestFactoryUnitTestSuite(t *testing.T) {
 
 func (s *factoryUnitTestSuite) TestSamble() {
 	//code here
-	// Assert
-	s.Assert().Equal(1, 1)
+	factory := New()
+	vehicleList := factory.generateVehicleLots(5)
+	i := 0
+	//testing generateVehicleLots
+	for _, vehicle := range vehicleList {
+		s.Assert().Equal(i, vehicle.Id)
+		i++
+	}
+	//testing AssembleVehicle
+	vehicle := vehicleList[1]
+	idleSpot := <-factory.AssemblingSpots
+	idleSpot.SetVehicle(&vehicle)
+	vehicleCar, err := idleSpot.AssembleVehicle()
+	if err == nil {
+		s.Assert().Equal(1, vehicleCar.Id)
+	}
 }
