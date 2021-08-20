@@ -32,19 +32,13 @@ func (s *AssemblySpot) AssembleVehicle() (*vehicle.Car, error) {
 	if s.vehicleToAssemble == nil {
 		return nil, errors.New("no vehicle set to start assembling")
 	}
-	wg.Add(1)
+	wg.Add(7)
 	go s.assembleChassis(&wg)
-	wg.Add(1)
 	go s.assembleTires(&wg)
-	wg.Add(1)
 	go s.assembleEngine(&wg)
-	wg.Add(1)
 	go s.assembleElectronics(&wg)
-	wg.Add(1)
 	go s.assembleDash(&wg)
-	wg.Add(1)
 	go s.assembleSeats(&wg)
-	wg.Add(1)
 	go s.assembleWindows(&wg)
 	wg.Wait()
 	return s.vehicleToAssemble, nil

@@ -34,9 +34,8 @@ func New() *Factory {
 
 //HINT: this function is currently not returning anything, make it return right away every single vehicle once assembled,
 //(Do not wait for all of them to be assembled to return them all, send each one ready over to main)
-func (f *Factory) StartAssemblingProcess(amountOfVehicles int) *vehicle.Car {
+func (f *Factory) StartAssemblingProcess(amountOfVehicles int, ch chan *vehicle.Car) {
 	vehicleList := f.generateVehicleLots(amountOfVehicles)
-	returnVehicle := &vehicle.Car{}
 	for _, vehicle := range vehicleList {
 		fmt.Println("Assembling vehicle...")
 
@@ -52,10 +51,8 @@ func (f *Factory) StartAssemblingProcess(amountOfVehicles int) *vehicle.Car {
 
 		idleSpot.SetVehicle(nil)
 		f.AssemblingSpots <- idleSpot
-		returnVehicle = vehicle
-		break
+		ch <- vehicle
 	}
-	return returnVehicle
 }
 
 func (Factory) generateVehicleLots(amountOfVehicles int) []vehicle.Car {
