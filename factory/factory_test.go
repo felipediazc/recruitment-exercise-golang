@@ -1,9 +1,8 @@
 package factory
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/suite"
+	"testing"
 )
 
 type factoryUnitTestSuite struct {
@@ -37,5 +36,11 @@ func (s *factoryUnitTestSuite) TestSamble() {
 	vehicleCar, err := idleSpot.AssembleVehicle()
 	if err == nil {
 		s.Assert().Equal(1, vehicleCar.Id)
+		//testing logs
+		vehicle.EngineStarted = true
+		vehicle.TestingLog = factory.testCar(&vehicle)
+		vehicle.AssembleLog = idleSpot.GetAssembledLogs()
+		s.Assert().NotEqual("", vehicleCar.AssembleLog)
+		s.Assert().NotEqual("", vehicleCar.TestingLog)
 	}
 }
