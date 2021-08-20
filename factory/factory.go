@@ -46,6 +46,7 @@ func (f *Factory) StartAssemblingProcess(amountOfVehicles int, ch chan vehicle.C
 		if err != nil {
 			continue
 		}
+		vehicle.EngineStarted = true
 		vehicle.TestingLog = f.testCar(vehicle)
 		vehicle.AssembleLog = idleSpot.GetAssembledLogs()
 

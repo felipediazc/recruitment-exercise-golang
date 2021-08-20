@@ -33,6 +33,7 @@ func (s *AssemblySpot) AssembleVehicle() (*vehicle.Car, error) {
 		return nil, errors.New("no vehicle set to start assembling")
 	}
 	wg.Add(7)
+	s.assemblyLog = ""
 	go s.assembleChassis(&wg)
 	go s.assembleTires(&wg)
 	go s.assembleEngine(&wg)
